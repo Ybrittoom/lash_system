@@ -1,28 +1,19 @@
-import { Pool } from "pg";
-import dotenv from "dotenv";
+import "dotenv/config";
+import pg from "pg";
 
-//carregando o arquivo .env
-dotenv.config();
+const { Pool } = pg;
 
-const pool = new Pool ({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: Number(process.env.DB_PORT),
-    ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: true } : false
+const pool = new Pool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: Number(process.env.DB_PORT || 5432),
+  ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: true } : false,
 });
 
-async function testarConexao() {
-  try {
-    const { rows } = await pool.query("SELECT NOW() AS horario");
-    console.log("Conexão funcionando! Horário do banco:", rows[0].horario);
-  } catch (erro) {
-    console.error("Falha na conexão:", erro.message);
-    process.exitCode = 1;
-  } finally {
-    await pool.end();
-  }
-}
+pool.on("error", (error) => {
+  console.error("Erro inesperado no pool do PostgreSQL:", error.message);
+});
 
-testarConexao();
+export default pool;
