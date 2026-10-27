@@ -45,3 +45,7 @@ export async function authenticateUser(email, senha) {
     token,
   };
 }
+
+class AuthService {
+  async findUserById(userId) {}
+}
