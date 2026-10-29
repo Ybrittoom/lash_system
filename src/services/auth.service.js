@@ -46,6 +46,3 @@ export async function authenticateUser(email, senha) {
   };
 }
 
-class AuthService {
-  async findUserById(userId) {}
-}

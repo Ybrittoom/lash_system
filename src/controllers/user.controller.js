@@ -1,6 +1,6 @@
-export async function getProfile(request, response, next) {
+export async function findUserById(request, response, next) {
     try {
-        const userId = request.userId
+        const userId = request.user.id//
 
         return response.json({ userId });
     } catch (error) {

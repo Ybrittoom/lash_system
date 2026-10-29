@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import pool from "./config/database.js";
 import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 // O servidor não inicia sem o segredo usado para assinar os tokens.
 if (!process.env.JWT_SECRET) {
@@ -14,7 +15,10 @@ const port = Number(process.env.PORT || 3000);
 app.disable("x-powered-by");
 app.use(express.json({ limit: "10kb" }));
 
+//ROTAS DE APIs
+//=================================
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/me", userRoutes);
 
 app.get("/api/health", async (_request, response, next) => {
   try {
