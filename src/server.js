@@ -18,7 +18,7 @@ app.use(express.json({ limit: "10kb" }));
 //ROTAS DE APIs
 //=================================
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/me", userRoutes);
+app.use("/api/v1", userRoutes);
 
 app.get("/api/health", async (_request, response, next) => {
   try {
