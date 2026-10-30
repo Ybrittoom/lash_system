@@ -3,6 +3,7 @@ import express from "express";
 import pool from "./config/database.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import productsRoutes from "./routes/products.routes.js";
 
 // O servidor não inicia sem o segredo usado para assinar os tokens.
 if (!process.env.JWT_SECRET) {
@@ -19,6 +20,8 @@ app.use(express.json({ limit: "10kb" }));
 //=================================
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1", userRoutes);
+
+app.use("/api/v1", productsRoutes);
 
 app.get("/api/health", async (_request, response, next) => {
   try {
