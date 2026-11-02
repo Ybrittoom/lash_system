@@ -1,5 +1,7 @@
 import "dotenv/config";
 import express from "express";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import pool from "./config/database.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
@@ -12,9 +14,20 @@ if (!process.env.JWT_SECRET) {
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
+const publicDirectory = path.resolve(currentDirectory, "../public");
+const viewDirectory = path.resolve(currentDirectory, "../view");
 
 app.disable("x-powered-by");
 app.use(express.json({ limit: "10kb" }));
+
+// Serve os arquivos do front-end pelo mesmo host e porta da API.
+app.use(express.static(publicDirectory));
+
+// A página fica em view/ e seus arquivos públicos são servidos por public/.
+app.get(["/", "/login"], (_request, response) => {
+  response.sendFile(path.join(viewDirectory, "login.html"));
+});
 
 //ROTAS DE APIs
 //=================================
