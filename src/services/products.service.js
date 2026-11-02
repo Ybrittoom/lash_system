@@ -15,3 +15,39 @@ export async function listProducts(userId) { //preciso do ID pra buscar somente 
     //result.rows ja retorna um array de todos os produtos encontrados([] vazio caso nao tiver nada)
     return result.rows;
 }
+
+export async function registerProduct(userId, name,category, unit, quantity, minimum_quantity, is_active) {
+    const result = await pool.query(
+        `
+            INSERT INTO products (
+                name,
+                category,
+                unit,
+                quantity,
+                minimum_quantity,
+                is_active,
+                user_id
+            )
+            VALUES 
+            (
+                $1,
+                $2,
+                $3,
+                $4,
+                $5,
+                $6
+            ) WHERE user_id = $7
+                
+        `,
+        [
+            name,
+            category,
+            unit,
+            quantity,
+            minimum_quantity,
+            is_active,
+            userId
+        ]
+    )
+    return result.rows[0];
+}
