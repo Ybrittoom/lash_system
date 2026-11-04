@@ -1,4 +1,4 @@
-import {listProducts} from "../services/products.service.js";
+import {listProducts, registerProduct} from "../services/products.service.js";
 
 export async function getProducts(req, res, next) {
     try {
@@ -17,5 +17,42 @@ export async function getProducts(req, res, next) {
         return res.status(200).json({ user })
     } catch (error) {
         return next(error)   
+    }
+}
+
+export async function postProducts(req, res, next) {
+    try {
+        //pegando o id do usuariooooooooo
+        const userId = req.user.id
+        
+        const {
+            name,
+            category,
+            unit,
+            quantity,
+            minimum_quantity,
+            is_active
+        } = req.body
+
+        // if (!user) {
+        //     return res.status(401).json({
+        //         error: "Usuario da sessao nao encontrado. Faça login novamente."
+        //     })
+        // }
+
+        const result = await registerProduct(
+            userId,//passar esse PARAMETROOOOA
+            name,
+            category,
+            unit,
+            quantity,
+            minimum_quantity,
+            is_active
+        ) 
+
+        res.status(201).json(result)//oq eu coloco aqui bbzete ?
+
+    } catch (error) {
+        return next(error)
     }
 }

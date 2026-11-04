@@ -37,11 +37,11 @@ src/
   middleware/              # Autenticação e validações compartilhadas
   routes/                  # Métodos e caminhos da API
   services/                # Consultas e regras de negócio
-view/
+src/view/
   login.html               # Página HTML de login
 ```
 
-O Express serve os arquivos de `public/` e entrega `view/login.html` em `/` e `/login`. O front-end e a API usam a mesma origem durante o desenvolvimento.
+O Express serve os arquivos de `public/` e entrega `src/view/login.html` em `/` e `/login`. O front-end e a API usam a mesma origem durante o desenvolvimento.
 
 ## Requisitos
 
@@ -145,7 +145,7 @@ Envie o mesmo header `Authorization: Bearer <token>`. A API filtra os produtos p
 
 ## Front-end de login
 
-O formulário em `view/login.html` envia e-mail e senha para o endpoint de login. O token é guardado em `sessionStorage`, que dura apenas enquanto a aba permanecer aberta. Ao recarregar a página, o JavaScript consulta `/api/v1/me` para validar e restaurar a sessão. O botão “Entrar com outra conta” remove o token da aba; ainda não existe uma rota no servidor para revogar um JWT.
+O formulário em `src/view/login.html` envia e-mail e senha para o endpoint de login. O token é guardado em `sessionStorage`, que dura apenas enquanto a aba permanecer aberta. Ao recarregar a página, o JavaScript consulta `/api/v1/me` para validar e restaurar a sessão. O botão “Entrar com outra conta” remove o token da aba; ainda não existe uma rota no servidor para revogar um JWT.
 
 ## Organização e segurança
 

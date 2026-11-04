@@ -35,8 +35,10 @@ export async function registerProduct(userId, name,category, unit, quantity, min
                 $3,
                 $4,
                 $5,
-                $6
-            ) WHERE user_id = $7
+                $6,
+                $7
+            ) 
+             RETURNING *
                 
         `,
         [
