@@ -34,6 +34,9 @@ export async function postProducts(req, res, next) {
             is_active
         } = req.body
 
+        //TODO : Validar o BODY antes de chamar o service
+
+
         // if (!user) {
         //     return res.status(401).json({
         //         error: "Usuario da sessao nao encontrado. Faça login novamente."
