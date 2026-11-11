@@ -5,16 +5,16 @@ export async function getProducts(req, res, next) {
         //pegando o ID do usuario 
         const userId = req.user.id;
 
-        const user = await listProducts(userId);//chamando a funçao e passando o ID do usuario 
+        const product = await listProducts(userId);//chamando a funçao e passando o ID do usuario 
 
-        if(!user) {
+        if(!product) {
             return res.status(401).json({
                 error: "Usuario da sessao nao encontrado. Faça login novamente.",
             })
         }
 
         //retornar somente os dados publicos produzidos pelo serviço
-        return res.status(200).json({ user })
+        return res.status(200).json({ product })
     } catch (error) {
         return next(error)   
     }
@@ -22,38 +22,107 @@ export async function getProducts(req, res, next) {
 
 export async function postProducts(req, res, next) {
     try {
-        //pegando o id do usuariooooooooo
-        const userId = req.user.id
-        
+        // O middleware authenticateToken valida o JWT e coloca o ID aqui.
+        // Não aceite user_id do body, pois o cliente poderia escolher outro usuário.
+        const userId = req.user.id;
+
+        // O cliente precisa enviar um objeto JSON, por exemplo: { "name": "Pinça" }.
+        // Essa verificação também evita erro ao tentar desestruturar body ausente ou inválido.
+        if (
+            req.body === null ||
+            typeof req.body !== "object" ||
+            Array.isArray(req.body)
+        ) {
+            return res.status(400).json({
+                error: "O corpo da requisição deve ser um objeto JSON.",
+            });
+        }
+
         const {
             name,
             category,
             unit,
-            quantity,
-            minimum_quantity,
-            is_active
-        } = req.body
+            quantity = 0,
+            minimum_quantity = 0,
+            is_active = true,
+        } = req.body;
 
-        //TODO : Validar o BODY antes de chamar o service
+        // Colete os problemas para devolver ao cliente todos de uma vez.
+        const validationErrors = [];
+        const allowedUnits = ["unidade", "par", "caixa", "frasco", "ml", "g"];
 
+        // Nome é obrigatório, deve ser texto não vazio e caber na coluna VARCHAR(150).
+        if (typeof name !== "string" || name.trim().length === 0) {
+            validationErrors.push("name é obrigatório e deve ser um texto não vazio.");
+        } else if (name.trim().length > 150) {
+            validationErrors.push("name deve ter no máximo 150 caracteres.");
+        }
 
-        // if (!user) {
-        //     return res.status(401).json({
-        //         error: "Usuario da sessao nao encontrado. Faça login novamente."
-        //     })
-        // }
+        // Categoria pode ser omitida ou nula; se vier, precisa ser texto de até 80 caracteres.
+        if (
+            category !== undefined &&
+            category !== null &&
+            (typeof category !== "string" || category.trim().length > 80)
+        ) {
+            validationErrors.push("category deve ser um texto de até 80 caracteres ou null.");
+        }
 
-        const result = await registerProduct(
-            userId,//passar esse PARAMETROOOOA
-            name,
-            category,
+        // A lista precisa coincidir com as opções do CHECK constraint no schema SQL.
+        if (!allowedUnits.includes(unit)) {
+            validationErrors.push(`unit deve ser uma destas opções: ${allowedUnits.join(", ")}.`);
+        }
+
+        // NUMERIC(12,3) aceita até três casas decimais e valores não negativos.
+        const isValidQuantity = (value) =>
+            typeof value === "number" &&
+            Number.isFinite(value) &&
+            value >= 0 &&
+            value <= 999999999.999 &&
+            Number(value.toFixed(3)) === value;
+
+        if (!isValidQuantity(quantity)) {
+            validationErrors.push("quantity deve ser um número não negativo com até 3 casas decimais.");
+        }
+
+        if (!isValidQuantity(minimum_quantity)) {
+            validationErrors.push("minimum_quantity deve ser um número não negativo com até 3 casas decimais.");
+        }
+
+        // Para unidades contáveis, como unidade/par/caixa, o schema exige números inteiros.
+        if (
+            allowedUnits.includes(unit) &&
+            !["ml", "g"].includes(unit) &&
+            (Number.isFinite(quantity) && !Number.isInteger(quantity) ||
+                Number.isFinite(minimum_quantity) && !Number.isInteger(minimum_quantity))
+        ) {
+            validationErrors.push("quantity e minimum_quantity devem ser inteiros para esta unidade.");
+        }
+
+        if (typeof is_active !== "boolean") {
+            validationErrors.push("is_active deve ser true ou false.");
+        }
+
+        if (validationErrors.length > 0) {
+            return res.status(400).json({
+                error: "Dados do produto inválidos.",
+                details: validationErrors,
+            });
+        }
+
+        // Normaliza espaços e valores vazios antes de persistir.
+        const products = await registerProduct(
+            userId,
+            name.trim(),
+            typeof category === "string" && category.trim() !== ""
+                ? category.trim()
+                : null,
             unit,
             quantity,
             minimum_quantity,
             is_active
-        ) 
+        );
 
-        res.status(201).json(result)//oq eu coloco aqui bbzete ?
+        return res.status(201).json({ products });
 
     } catch (error) {
         return next(error)

@@ -60,6 +60,7 @@ app.use((request, response) => {
 // Evita enviar detalhes internos do servidor ao cliente.
 app.use((error, _request, response, _next) => {
   console.error("Erro na API:", error.message);
+  // TODO: tratar a constraint products_user_name_unique como 409 Conflict.
   response.status(500).json({ error: "Erro interno do servidor" });
 });
 
