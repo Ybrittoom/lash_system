@@ -1,17 +1,17 @@
 # Tarefa atual
 
-## Tratar produto duplicado como conflito
+## Conferir o cadastro com estoque inicial zero
 
-**Onde:** `src/server.js`, no middleware de tratamento de erros, marcado com `TODO`.
+**Onde:** `src/controllers/products.controller.js`, no `TODO` dentro de `postProducts`.
 
-**Objetivo:** quando o PostgreSQL rejeitar um produto ativo com nome duplicado para o mesmo usuário, responder `409 Conflict` com uma mensagem clara. Para os demais erros, continuar retornando `500` sem expor detalhes internos do banco.
+**Objetivo:** confirmar manualmente que o cadastro cria o produto com saldo zero e não aceita `quantity` enviado pelo cliente.
 
-**Dicas:**
+**Como conferir no Insomnia:**
 
-- O PostgreSQL usa o código `23505` para violação de unicidade.
-- Confira também `error.constraint` para tratar especificamente `products_user_name_unique`.
-- O controller já encaminha erros usando `next(error)`, então o tratamento pode ficar centralizado no middleware do servidor.
+1. Envie um produto válido sem `quantity`. Espere `201 Created` e `product.quantity` igual a `0.000`.
+2. Envie outro cadastro válido incluindo `"quantity": 5`. Espere `400 Bad Request` com a mensagem de que produtos começam com estoque zero.
+3. Confirme que o cadastro rejeitado não criou uma linha.
 
-**Como conferir no Insomnia:** envie novamente um cadastro ativo com o mesmo nome de um produto existente. Experimente também mudar maiúsculas e minúsculas. A resposta deve ser `409`, e o produto duplicado não deve ser criado.
+`minimum_quantity` continua permitido porque representa o limite para alerta, não o saldo atual.
 
-Quando concluir, me avise. Vou remover esta tarefa do arquivo e colocar somente a próxima, com o respectivo `TODO` no código.
+Quando concluir e me avisar, vou remover esta tarefa e registrar a próxima: implementar uma entrada de estoque em transação PostgreSQL.

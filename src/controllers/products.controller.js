@@ -5,16 +5,10 @@ export async function getProducts(req, res, next) {
         //pegando o ID do usuario 
         const userId = req.user.id;
 
-        const product = await listProducts(userId);//chamando a funçao e passando o ID do usuario 
-
-        if(!product) {
-            return res.status(401).json({
-                error: "Usuario da sessao nao encontrado. Faça login novamente.",
-            })
-        }
+        const products = await listProducts(userId);//chamando a funçao e passando o ID do usuario 
 
         //retornar somente os dados publicos produzidos pelo serviço
-        return res.status(200).json({ product })
+        return res.status(200).json({ products })
     } catch (error) {
         return next(error)   
     }
@@ -38,11 +32,18 @@ export async function postProducts(req, res, next) {
             });
         }
 
+        // Object.hasOwn verifica se a propriedade foi enviada, inclusive se o valor for 0 ou null.
+        // Rejeitamos o campo inteiro para ninguém definir saldo pelo cadastro; entradas serão movimentações.
+        if (Object.hasOwn(req.body, "quantity")) {
+            return res.status(400).json({
+                error: "Não envie quantity no cadastro. Novos produtos começam com estoque zero.",
+            });
+        }
+
         const {
             name,
             category,
             unit,
-            quantity = 0,
             minimum_quantity = 0,
             is_active = true,
         } = req.body;
@@ -73,29 +74,25 @@ export async function postProducts(req, res, next) {
         }
 
         // NUMERIC(12,3) aceita até três casas decimais e valores não negativos.
-        const isValidQuantity = (value) =>
+        const isValidAmount = (value) =>
             typeof value === "number" &&
             Number.isFinite(value) &&
             value >= 0 &&
             value <= 999999999.999 &&
             Number(value.toFixed(3)) === value;
 
-        if (!isValidQuantity(quantity)) {
-            validationErrors.push("quantity deve ser um número não negativo com até 3 casas decimais.");
-        }
-
-        if (!isValidQuantity(minimum_quantity)) {
+        if (!isValidAmount(minimum_quantity)) {
             validationErrors.push("minimum_quantity deve ser um número não negativo com até 3 casas decimais.");
         }
 
-        // Para unidades contáveis, como unidade/par/caixa, o schema exige números inteiros.
+        // Para unidades contáveis, o limite mínimo também deve ser inteiro.
         if (
             allowedUnits.includes(unit) &&
             !["ml", "g"].includes(unit) &&
-            (Number.isFinite(quantity) && !Number.isInteger(quantity) ||
-                Number.isFinite(minimum_quantity) && !Number.isInteger(minimum_quantity))
+            Number.isFinite(minimum_quantity) &&
+            !Number.isInteger(minimum_quantity)
         ) {
-            validationErrors.push("quantity e minimum_quantity devem ser inteiros para esta unidade.");
+            validationErrors.push("minimum_quantity deve ser inteiro para esta unidade.");
         }
 
         if (typeof is_active !== "boolean") {
@@ -110,19 +107,19 @@ export async function postProducts(req, res, next) {
         }
 
         // Normaliza espaços e valores vazios antes de persistir.
-        const products = await registerProduct(
+        const product = await registerProduct(
             userId,
             name.trim(),
             typeof category === "string" && category.trim() !== ""
                 ? category.trim()
                 : null,
             unit,
-            quantity,
             minimum_quantity,
             is_active
         );
 
-        return res.status(201).json({ products });
+        // TODO: conferir no Insomnia que quantity nasce em zero e que quantity enviado é rejeitado.
+        return res.status(201).json({ product });
 
     } catch (error) {
         return next(error)

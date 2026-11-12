@@ -16,14 +16,16 @@ export async function listProducts(userId) { //preciso do ID pra buscar somente 
     return result.rows;
 }
 
-export async function registerProduct(userId, name,category, unit, quantity, minimum_quantity, is_active) {
+export async function registerProduct(userId, name, category, unit, minimum_quantity, is_active) {
+    // A coluna quantity foi omitida intencionalmente: o schema define DEFAULT 0,
+    // então o PostgreSQL inicia o saldo zerado sem o cliente poder escolher a quantidade.
+    // RETURNING * devolve a linha criada para o controller responder com o produto e seu saldo.
     const result = await pool.query(
         `
             INSERT INTO products (
                 name,
                 category,
                 unit,
-                quantity,
                 minimum_quantity,
                 is_active,
                 user_id
@@ -35,20 +37,19 @@ export async function registerProduct(userId, name,category, unit, quantity, min
                 $3,
                 $4,
                 $5,
-                $6,
-                $7
+                $6
             ) 
              RETURNING *
                 
         `,
         [
+            // A ordem destes valores corresponde aos placeholders $1 a $6 do INSERT.
             name,
             category,
             unit,
-            quantity,
             minimum_quantity,
             is_active,
-            userId
+            userId,
         ]
     )
     return result.rows[0];

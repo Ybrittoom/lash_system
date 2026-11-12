@@ -60,8 +60,19 @@ app.use((request, response) => {
 // Evita enviar detalhes internos do servidor ao cliente.
 app.use((error, _request, response, _next) => {
   console.error("Erro na API:", error.message);
-  // TODO: tratar a constraint products_user_name_unique como 409 Conflict.
-  response.status(500).json({ error: "Erro interno do servidor" });
+
+  // O PostgreSQL usa o código 23505 para violações de unicidade.
+  // Confira a constraint também para não classificar outros conflitos como duplicidade de produto.
+  if (
+    error.code === "23505" &&
+    error.constraint === "products_user_name_unique"
+  ) {
+    return response.status(409).json({
+      error: "Já existe um produto ativo com esse nome.",
+    });
+  }
+
+  return response.status(500).json({ error: "Erro interno do servidor" });
 });
 
 const server = app.listen(port, () => {
