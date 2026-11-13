@@ -54,3 +54,30 @@ export async function registerProduct(userId, name, category, unit, minimum_quan
     )
     return result.rows[0];
 }
+
+export async function registerEntry(userId, quantity, notes) {
+    const result = await pool.query(
+        `
+            SELECT id, quantity, unit 
+            FROM products 
+            WHERE id = $1
+                AND user_id = $2
+                AND is_active = TRUE
+            FOR UPDATE
+
+            UPDATE products
+SET quantity = quantity + $1,
+    updated_at = NOW()
+WHERE id = $2
+  AND user_id = $3
+  AND is_active = TRUE
+RETURNING id, name, unit, quantity;
+
+INSERT INTO stock_movements (
+    user_id, product_id, type, quantity, notes
+)
+VALUES ($1, $2, 'entrada', $3, $4)
+RETURNING id, user_id, product_id, type, quantity, notes, created_at;
+        `
+    )
+}

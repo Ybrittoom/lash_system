@@ -1,4 +1,5 @@
 import {listProducts, registerProduct} from "../services/products.service.js";
+import { isValidAmount } from "../utils/validator.utils.js";
 
 export async function getProducts(req, res, next) {
     try {
@@ -118,9 +119,41 @@ export async function postProducts(req, res, next) {
             is_active
         );
 
-        // TODO: conferir no Insomnia que quantity nasce em zero e que quantity enviado é rejeitado.
         return res.status(201).json({ product });
 
+    } catch (error) {
+        return next(error)
+    }
+}
+
+export async function postEntry(req, res, next) {
+    try {
+        //pegando o id do usuario parça
+        const userId = req.user.id
+        const userProduct = req.params.productId
+        
+        if( req.body === null || typeof req.body !== "object" || Array.isArray(req.body)) {
+            return res.status(400).json({
+                error: "O corpo da requisiçao deve ser um objeto JSON!"
+            })
+        }
+
+        if (!isValidAmount(quantity) || quantity <= 0) {
+            return "Quantity deve ser inteiro e maior que zero!"
+        }
+
+        const {
+            quantity,
+            notes
+        } = req.body
+
+        const entry = await registerEntry(
+            userId,
+            quantity,
+            notes
+        )
+
+        return res.status(201).json({ entry })
     } catch (error) {
         return next(error)
     }
