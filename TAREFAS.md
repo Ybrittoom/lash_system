@@ -1,18 +1,16 @@
 # Tarefa atual
 
-## Concluir o endpoint de entrada de estoque
+## Conferir o endpoint de entrada de estoque
 
-**Onde:** `src/routes/products.routes.js`, no `TODO` da rota `POST /products/:productId/movements`.
+**Estado:** implementação concluída; pendente apenas a conferência manual no Insomnia.
 
-**Estado atual:** a rota autenticada e a função `postEntry` já foram iniciadas. O controller ainda precisa validar e encaminhar os dados corretamente; o service ainda não implementa `registerEntry`.
+**Onde:** `src/controllers/products.controller.js`, no `TODO` dentro de `postEntry`.
 
-**O que falta:**
+**Como conferir no Insomnia:**
 
-1. No controller, leia `quantity` e `notes` de `req.body` antes de validar `quantity`. Leia `productId` de `req.params.productId` e use `req.user.id` como `userId`. Responda com JSON e status `400` para entrada inválida; não retorne uma string solta.
-2. Importe/chame `registerEntry` passando `userId`, `productId`, `quantity` e `notes`.
-3. No service, use `pool.connect()` e um único `client` para executar `BEGIN`, as queries, `COMMIT` ou `ROLLBACK`, e sempre `client.release()` no `finally`.
-4. Dentro da transação, busque e bloqueie um produto ativo pertencente ao usuário (`SELECT ... FOR UPDATE`) para validar existência, propriedade e unidade.
-5. Valide que a quantidade é positiva e que unidades contáveis recebem números inteiros. Atualize `products.quantity` e insira em `stock_movements` com o tipo fixo `entrada`.
-6. Se tudo funcionar, confirme a transação e retorne os dados; se algo falhar, desfaça as operações. Não aceite `user_id` do body.
+1. Faça uma entrada válida para um produto do usuário autenticado. Espere `201`, o saldo atualizado em `entry.product.quantity` e os dados da movimentação em `entry.movement`.
+2. Envie quantidade zero ou negativa. Espere `400` e confirme que nem o saldo nem o histórico mudaram.
+3. Para uma unidade contável, envie quantidade fracionada. Espere `400`; para `ml` ou `g`, uma fração válida deve ser aceita.
+4. Use um ID de produto inexistente ou pertencente a outro usuário. Espere `404` e confirme que não houve alteração.
 
-**Como conferir no Insomnia:** uma entrada válida deve responder `201`, aumentar o saldo e criar uma linha em `stock_movements`. Quantidade inválida ou produto de outro usuário não deve alterar nenhuma das tabelas.
+Todas as respostas de erro devem ser JSON. O saldo e o histórico precisam continuar consistentes porque as duas gravações são feitas na mesma transação.

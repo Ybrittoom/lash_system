@@ -8,8 +8,6 @@ router.get("/products", authenticateToken, getProducts);
 
 router.post("/products", authenticateToken, postProducts)
 
-// A rota e a autenticação já estão ligadas; falta concluir controller, validação e service transacional.
-// TODO: implementar o registro da entrada e atualizar saldo e histórico na mesma transação.
 //===============
 //SEÇAO DE ESTOQUE(ENTRADA/ SAIDA)
 //===============

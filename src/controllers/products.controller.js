@@ -1,4 +1,4 @@
-import {listProducts, registerProduct} from "../services/products.service.js";
+import {listProducts, registerProduct, registerEntry} from "../services/products.service.js";
 import { isValidAmount } from "../utils/validator.utils.js";
 
 export async function getProducts(req, res, next) {
@@ -128,33 +128,59 @@ export async function postProducts(req, res, next) {
 
 export async function postEntry(req, res, next) {
     try {
-        //pegando o id do usuario parça
-        const userId = req.user.id
-        const userProduct = req.params.productId
-        
-        if( req.body === null || typeof req.body !== "object" || Array.isArray(req.body)) {
+        // O middleware JWT fornece o usuário; o ID do produto vem do parâmetro da rota.
+        const userId = req.user.id;
+        const productId = req.params.productId;
+
+        // products.id é BIGINT no PostgreSQL; valide como texto e BigInt para não perder precisão.
+        const isValidProductId =
+            typeof productId === "string" &&
+            /^[1-9]\d*$/.test(productId) &&
+            BigInt(productId) <= 9223372036854775807n;
+
+        if (!isValidProductId) {
             return res.status(400).json({
-                error: "O corpo da requisiçao deve ser um objeto JSON!"
-            })
+                error: "productId deve ser um inteiro positivo válido.",
+            });
         }
+
+        // O endpoint espera um objeto JSON no body, não array, null ou outro tipo.
+        if (req.body === null || typeof req.body !== "object" || Array.isArray(req.body)) {
+            return res.status(400).json({
+                error: "O corpo da requisição deve ser um objeto JSON.",
+            });
+        }
+
+        // Extraia os campos antes de validar para que quantity já exista nesta etapa.
+        const { quantity, notes } = req.body;
 
         if (!isValidAmount(quantity) || quantity <= 0) {
-            return "Quantity deve ser inteiro e maior que zero!"
+            return res.status(400).json({
+                error: "quantity deve ser um número positivo com até três casas decimais.",
+            });
         }
 
-        const {
-            quantity,
-            notes
-        } = req.body
+        // notes é opcional; quando vier, precisa ser texto. O service também confere isso.
+        if (notes !== undefined && notes !== null && typeof notes !== "string") {
+            return res.status(400).json({
+                error: "notes deve ser um texto ou null.",
+            });
+        }
 
-        const entry = await registerEntry(
-            userId,
-            quantity,
-            notes
-        )
+        const entry = await registerEntry(userId, productId, quantity, notes);
 
-        return res.status(201).json({ entry })
+        // TODO: conferir no Insomnia saldo atualizado, histórico e casos rejeitados.
+        return res.status(201).json({ entry });
     } catch (error) {
-        return next(error)
+        // Erros de regra de negócio do service viram respostas 4xx; falhas inesperadas seguem ao middleware.
+        if (error.code === "PRODUCT_NOT_FOUND") {
+            return res.status(404).json({ error: error.message });
+        }
+
+        if (error.code === "INVALID_ENTRY_QUANTITY" || error.code === "INVALID_ENTRY_NOTES") {
+            return res.status(400).json({ error: error.message });
+        }
+
+        return next(error);
     }
 }
