@@ -25,6 +25,7 @@ function hideFeedback() {
 }
 
 function showAuthenticatedState(user) {
+  // TODO: quando a tela de produtos existir, navegar para ela após login e restauração da sessão.
   successTitle.textContent = `Olá, ${user.name || "profissional"}!`;
   loginContent.hidden = true;
   successPanel.hidden = false;

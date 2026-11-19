@@ -1,16 +1,30 @@
 # Tarefa atual
 
-## Conferir o endpoint de entrada de estoque
+## Criar a primeira tela de produtos
 
-**Estado:** implementação concluída; pendente apenas a conferência manual no Insomnia.
+**Estado:** estrutura HTML e estilos CSS criados; integração JavaScript e rota do servidor continuam pendentes.
 
-**Onde:** `src/controllers/products.controller.js`, no `TODO` dentro de `postEntry`.
+**Onde:** `public/js/login.js`, no `TODO` dentro de `showAuthenticatedState`.
 
-**Como conferir no Insomnia:**
+**Objetivo:** começar o front usando as APIs que já estão prontas para listar produtos, cadastrar um produto sem saldo inicial e registrar entradas.
 
-1. Faça uma entrada válida para um produto do usuário autenticado. Espere `201`, o saldo atualizado em `entry.product.quantity` e os dados da movimentação em `entry.movement`.
-2. Envie quantidade zero ou negativa. Espere `400` e confirme que nem o saldo nem o histórico mudaram.
-3. Para uma unidade contável, envie quantidade fracionada. Espere `400`; para `ml` ou `g`, uma fração válida deve ser aceita.
-4. Use um ID de produto inexistente ou pertencente a outro usuário. Espere `404` e confirme que não houve alteração.
+**Arquivos previstos:**
 
-Todas as respostas de erro devem ser JSON. O saldo e o histórico precisam continuar consistentes porque as duas gravações são feitas na mesma transação.
+- `src/view/products.html` para a estrutura da tela.
+- `public/css/products.css` para os estilos.
+- `public/js/products.js` para carregar e enviar dados à API.
+- `src/server.js` para servir a página em `/products`.
+- `public/js/login.js` para navegar à tela depois do login e ao restaurar uma sessão existente.
+
+**A tela inicial deve permitir:**
+
+1. Listar produtos com nome, categoria, unidade, saldo atual e limite mínimo, usando `GET /api/v1/products`.
+2. Cadastrar produto sem campo de quantidade, usando `POST /api/v1/products`.
+3. Registrar uma entrada a partir do produto selecionado, usando `POST /api/v1/products/:productId/movements`.
+4. Enviar o JWT salvo em `sessionStorage` no header `Authorization: Bearer <token>`.
+
+O ID do produto deve ficar associado ao item selecionado na interface; a cliente escolhe o produto pelo nome e não precisa digitar o ID.
+
+**Como conferir:** entrar pelo login, abrir a tela de produtos, carregar a lista, cadastrar um produto e registrar uma entrada. A lista deve refletir o saldo atualizado.
+
+Saídas de estoque e consulta do histórico ainda serão implementadas em tarefas posteriores.
