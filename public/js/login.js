@@ -11,7 +11,6 @@ const submitButton = document.querySelector("#submit-button");
 const submitLabel = document.querySelector("#submit-label");
 const loginContent = document.querySelector("#login-content");
 const successPanel = document.querySelector("#success-panel");
-const successTitle = document.querySelector("#success-title");
 const switchAccountButton = document.querySelector("#switch-account");
 
 function showFeedback(message) {
@@ -24,11 +23,9 @@ function hideFeedback() {
   feedback.hidden = true;
 }
 
-function showAuthenticatedState(user) {
-  // TODO: quando a tela de produtos existir, navegar para ela após login e restauração da sessão.
-  successTitle.textContent = `Olá, ${user.name || "profissional"}!`;
-  loginContent.hidden = true;
-  successPanel.hidden = false;
+function showAuthenticatedState() {
+  // Após validar a credencial ou restaurar a sessão, abre o painel de produtos.
+  window.location.assign("/products");
 }
 
 async function readResponse(response) {
@@ -64,7 +61,7 @@ form.addEventListener("submit", async (event) => {
     // O token é guardado apenas nesta aba do navegador. Ele não é exibido
     // na tela e será enviado como Bearer token nas próximas requisições.
     sessionStorage.setItem(tokenStorageKey, data.token);
-    showAuthenticatedState(data.user);
+    showAuthenticatedState();
   } catch (error) {
     if (error instanceof TypeError) {
       showFeedback("Não consegui conectar à API. Confira se o servidor está rodando e tente novamente.");
@@ -119,7 +116,7 @@ async function restoreSession() {
     }
 
     const data = await readResponse(response);
-    showAuthenticatedState(data.user);
+    showAuthenticatedState();
   } catch (error) {
     showFeedback(error instanceof TypeError
       ? "Não foi possível validar a sessão. Confira se o servidor está rodando."

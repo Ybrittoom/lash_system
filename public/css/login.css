@@ -1052,3 +1052,202 @@ input:focus-visible {
     font-size: 13px;
   }
 }
+
+/* Ajustes de viewport: o cartão centraliza quando cabe e vira conteúdo rolável
+   em telas baixas, para que o topo e o rodapé do formulário não sejam cortados. */
+html {
+  min-width: 320px;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(16px, 3vh, 32px) clamp(14px, 3vw, 32px);
+}
+
+.page-shell {
+  width: min(1240px, 100%);
+  min-height: min(780px, calc(100svh - 48px));
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+}
+
+.welcome-panel {
+  min-height: 0;
+  padding: clamp(28px, 4vw, 52px);
+}
+
+.welcome-copy {
+  margin-top: clamp(34px, 8vh, 76px);
+}
+
+.welcome-copy h1 {
+  font-size: clamp(38px, 4vw, 58px);
+}
+
+.login-panel {
+  min-height: 0;
+  padding: clamp(30px, 5vw, 64px) clamp(32px, 6vw, 76px) 28px;
+}
+
+.login-content {
+  padding: 18px 0 28px;
+}
+
+.form-heading {
+  margin-bottom: clamp(22px, 4vh, 34px);
+}
+
+.form-heading h2,
+.success-panel h2 {
+  font-size: clamp(34px, 3.2vw, 46px);
+}
+
+.field-label,
+.form-subtitle,
+.input-wrap input,
+.password-toggle,
+.submit-button {
+  font-size: 16px;
+}
+
+.input-wrap input {
+  min-height: 58px;
+}
+
+@media (max-width: 900px) {
+  body {
+    padding: 20px 16px;
+  }
+
+  .page-shell {
+    width: min(620px, 100%);
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .welcome-panel {
+    display: none;
+  }
+
+  .login-panel {
+    min-height: min(760px, calc(100svh - 40px));
+    padding: 28px clamp(26px, 7vw, 58px) 24px;
+  }
+
+  .mobile-brand {
+    display: inline-flex;
+  }
+
+  .login-content,
+  .success-panel {
+    margin: auto;
+  }
+
+  .login-content {
+    padding: clamp(30px, 6vh, 54px) 0;
+  }
+
+  .form-heading h2,
+  .success-panel h2 {
+    font-size: clamp(36px, 6vw, 48px);
+  }
+}
+
+@media (max-width: 520px) {
+  body {
+    padding: 0;
+    background: #fcfaf4;
+  }
+
+  .page-shell {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100svh;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .login-panel {
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: max(24px, env(safe-area-inset-top)) 24px max(20px, env(safe-area-inset-bottom));
+  }
+
+  .login-content {
+    padding: 34px 0;
+  }
+
+  .form-heading {
+    margin-bottom: 28px;
+  }
+
+  .form-heading h2,
+  .success-panel h2 {
+    font-size: clamp(34px, 9vw, 42px);
+  }
+
+  .form-subtitle {
+    font-size: 16px;
+  }
+
+  .field-label,
+  .input-wrap input,
+  .password-toggle {
+    font-size: 16px;
+  }
+
+  .input-wrap input {
+    height: 58px;
+  }
+
+  .submit-button {
+    min-height: 58px;
+    font-size: 16px;
+  }
+}
+
+@media (max-height: 760px) {
+  body {
+    align-items: start;
+  }
+
+  .page-shell {
+    min-height: 0;
+  }
+
+  .login-panel {
+    padding-top: 24px;
+    padding-bottom: 20px;
+  }
+
+  .login-content {
+    padding-top: 12px;
+    padding-bottom: 16px;
+  }
+
+  .form-heading {
+    margin-bottom: 20px;
+  }
+
+  .input-wrap {
+    margin-bottom: 16px;
+  }
+
+  .privacy-note {
+    margin-top: 16px;
+  }
+}
+
+@media (max-width: 520px) and (max-height: 740px) {
+  .login-panel {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
+  .login-content {
+    margin-top: 28px;
+    margin-bottom: 28px;
+  }
+}

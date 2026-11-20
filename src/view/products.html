@@ -3,24 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#11100d" />
-    <meta
-      name="description"
-      content="Organize os produtos e acompanhe o estoque do seu espaço de beleza."
-    />
+    <meta name="theme-color" content="#171613" />
+    <meta name="description" content="Consulte e organize os produtos do seu estoque." />
     <title>Produtos | Lash Systema</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../../public/css/products.css" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/products.css" />
+    <script type="module" src="/js/products.js"></script>
   </head>
-  <body>
-    <div class="app-shell">
-      <aside class="sidebar" aria-label="Navegação principal">
-        <a class="brand" href="/" aria-label="Lash Systema, início">
+  <body class="products-page">
+    <main class="products-main">
+      <header class="products-header">
+        <a class="products-brand" href="/products" aria-label="Lash Systema — produtos">
           <span class="brand-mark" aria-hidden="true">
             <svg viewBox="0 0 48 48" fill="none">
               <path d="M8 25c8-11 24-11 32 0-8 10-24 10-32 0Z" />
@@ -30,334 +25,131 @@
           </span>
           <span class="brand-name">lash <strong>systema</strong></span>
         </a>
+        <span class="products-header-label">Seu espaço <span aria-hidden="true">›</span> Produtos</span>
+      </header>
 
-        <div class="sidebar-section-label">MENU PRINCIPAL</div>
-        <nav class="side-nav">
-          <a class="nav-link" href="#overview">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
-              <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
-              <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
-              <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
-            </svg>
-            <span>Visão geral</span>
-          </a>
-          <a class="nav-link is-active" href="/products" aria-current="page">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" />
-              <path d="m4.5 7.8 7.5 4.3 7.5-4.3M12 12.2V21M8 5.3l8 4.6" />
-            </svg>
-            <span>Produtos</span>
-            <span class="nav-count">12</span>
-          </a>
-          <a class="nav-link" href="#movements">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M7 7h12l-3-3M17 17H5l3 3" />
-              <path d="M19 7a7 7 0 0 1 1.5 4M5 17a7 7 0 0 1-1.5-4" />
-            </svg>
-            <span>Movimentações</span>
-          </a>
-          <a class="nav-link" href="#low-stock">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 3.5 21 20H3l9-16.5Z" />
-              <path d="M12 9v4.5M12 17h.01" />
-            </svg>
-            <span>Estoque baixo</span>
-            <span class="nav-count nav-count-alert">03</span>
-          </a>
-        </nav>
-
-        <div class="sidebar-spacer"></div>
-
-        <div class="sidebar-note">
-          <span class="sidebar-note-icon" aria-hidden="true">✦</span>
-          <p>Seu cuidado também está nos detalhes da sua rotina.</p>
-        </div>
-
-        <div class="sidebar-user">
-          <div class="avatar" aria-hidden="true">MV</div>
-          <div class="sidebar-user-copy">
-            <strong>Profissional</strong>
-            <span>Minha conta</span>
+      <div class="products-content">
+        <section class="panel product-panel" id="product-list" aria-labelledby="products-heading">
+          <div class="panel-heading products-heading">
+            <div>
+              <p class="eyebrow">SEU CATÁLOGO</p>
+              <h1 id="products-heading">Produtos</h1>
+              <p class="panel-subtitle">Consulte seus materiais e acompanhe o saldo de cada item.</p>
+            </div>
+            <button class="small-action" id="show-product-form" type="button">
+              <span aria-hidden="true">+</span>
+              <span>Novo produto</span>
+            </button>
           </div>
-          <button class="icon-button user-menu" type="button" aria-label="Opções da conta">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="5" cy="12" r="1" />
-              <circle cx="12" cy="12" r="1" />
-              <circle cx="19" cy="12" r="1" />
-            </svg>
-          </button>
-        </div>
-      </aside>
 
-      <main class="main-content" id="overview">
-        <header class="topbar">
-          <div class="breadcrumb">
-            <span>Seu espaço</span>
-            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="m6 3 5 5-5 5" />
-            </svg>
-            <strong>Produtos</strong>
-          </div>
-          <div class="topbar-actions">
-            <span class="today-label">
+          <div class="product-toolbar">
+            <label class="search-field">
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <rect x="3" y="4.5" width="14" height="12" rx="2" />
-                <path d="M6.5 2.5v4M13.5 2.5v4M3 8.5h14" />
+                <circle cx="8.8" cy="8.8" r="5.8" />
+                <path d="m13 13 4 4" />
               </svg>
-              Meu estoque
-            </span>
-            <div class="top-avatar" aria-label="Conta da profissional">P</div>
-          </div>
-        </header>
-
-        <div class="content-wrap">
-          <section class="welcome-banner" aria-labelledby="page-title">
-            <div class="banner-copy">
-              <p class="eyebrow eyebrow-light">ORGANIZAÇÃO QUE ACOMPANHA SEU TALENTO</p>
-              <h1 id="page-title">Seu estoque,<br /><em>sob controle.</em></h1>
-              <p>Cuide dos seus materiais com leveza e tenha tudo à mão para atender.</p>
-              <a class="banner-link" href="#product-list">
-                Ver meus produtos
-                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="M3.5 10h12m-5-5 5 5-5 5" />
-                </svg>
-              </a>
-            </div>
-            <div class="banner-stamp" aria-hidden="true">
-              <span>LS</span>
-              <small>BELEZA<br />EM ORDEM</small>
-            </div>
-            <span class="banner-glow" aria-hidden="true"></span>
-          </section>
-
-          <section class="summary-grid" aria-label="Resumo do estoque">
-            <article class="summary-card">
-              <div class="summary-icon icon-gold" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" />
-                  <path d="m4.5 7.8 7.5 4.3 7.5-4.3M12 12.2V21" />
-                </svg>
-              </div>
-              <div class="summary-copy">
-                <span>Produtos ativos</span>
-                <strong>12</strong>
-                <small>materiais cadastrados</small>
-              </div>
-              <span class="summary-corner" aria-hidden="true">01</span>
-            </article>
-            <article class="summary-card">
-              <div class="summary-icon icon-alert" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M12 3.5 21 20H3l9-16.5Z" />
-                  <path d="M12 9v4.5M12 17h.01" />
-                </svg>
-              </div>
-              <div class="summary-copy">
-                <span>Precisam de atenção</span>
-                <strong>03</strong>
-                <small>abaixo do mínimo</small>
-              </div>
-              <span class="summary-corner" aria-hidden="true">02</span>
-            </article>
-            <article class="summary-card summary-card-dark">
-              <div class="summary-icon icon-dark" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M7 7h12l-3-3M17 17H5l3 3" />
-                  <path d="M19 7a7 7 0 0 1 1.5 4M5 17a7 7 0 0 1-1.5-4" />
-                </svg>
-              </div>
-              <div class="summary-copy">
-                <span>Movimentações</span>
-                <strong>08</strong>
-                <small>registros neste mês</small>
-              </div>
-              <span class="summary-corner" aria-hidden="true">03</span>
-            </article>
-          </section>
-
-          <div class="workspace-grid">
-            <section class="panel product-panel" id="product-list" aria-labelledby="products-heading">
-              <div class="panel-heading">
-                <div>
-                  <p class="eyebrow">SEU CATÁLOGO</p>
-                  <h2 id="products-heading">Produtos e materiais</h2>
-                  <p class="panel-subtitle">Acompanhe o que você tem no espaço.</p>
-                </div>
-                <button class="small-action" type="button" aria-label="Adicionar produto">
-                  <span aria-hidden="true">+</span>
-                  <span>Novo produto</span>
-                </button>
-              </div>
-
-              <div class="product-toolbar">
-                <label class="search-field">
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <circle cx="8.8" cy="8.8" r="5.8" />
-                    <path d="m13 13 4 4" />
-                  </svg>
-                  <span class="sr-only">Buscar produtos</span>
-                  <input type="search" placeholder="Buscar produto..." />
-                </label>
-                <button class="filter-button" type="button">
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path d="M3 5h14M5.5 10h9M8 15h4" />
-                  </svg>
-                  Filtros
-                </button>
-              </div>
-
-              <div class="table-scroll">
-                <table class="product-table">
-                  <thead>
-                    <tr>
-                      <th scope="col">PRODUTO</th>
-                      <th scope="col">UNIDADE</th>
-                      <th scope="col">QUANTIDADE</th>
-                      <th scope="col">MÍNIMO</th>
-                      <th scope="col">SITUAÇÃO</th>
-                      <th scope="col"><span class="sr-only">Ações</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="product-name-cell">
-                          <span class="product-symbol symbol-leopard" aria-hidden="true">✦</span>
-                          <span><strong>Cotonete</strong><small>Higiene e preparação</small></span>
-                        </div>
-                      </td>
-                      <td><span class="unit-label">unidade</span></td>
-                      <td><strong class="quantity-value">0</strong></td>
-                      <td>5</td>
-                      <td><span class="stock-status status-low"><i></i> Repor</span></td>
-                      <td><button class="row-menu" type="button" aria-label="Ações para Cotonete">•••</button></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="product-name-cell">
-                          <span class="product-symbol symbol-tools" aria-hidden="true">✧</span>
-                          <span><strong>Pinça curva</strong><small>Ferramentas</small></span>
-                        </div>
-                      </td>
-                      <td><span class="unit-label">unidade</span></td>
-                      <td><strong class="quantity-value">5</strong></td>
-                      <td>2</td>
-                      <td><span class="stock-status status-ok"><i></i> Em dia</span></td>
-                      <td><button class="row-menu" type="button" aria-label="Ações para Pinça curva">•••</button></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="product-name-cell">
-                          <span class="product-symbol symbol-bottle" aria-hidden="true">✦</span>
-                          <span><strong>Higienizador</strong><small>Cuidados e limpeza</small></span>
-                        </div>
-                      </td>
-                      <td><span class="unit-label">frasco</span></td>
-                      <td><strong class="quantity-value">2</strong></td>
-                      <td>3</td>
-                      <td><span class="stock-status status-low"><i></i> Repor</span></td>
-                      <td><button class="row-menu" type="button" aria-label="Ações para Higienizador">•••</button></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <footer class="table-footer">
-                <span>Exibindo <strong>3</strong> de <strong>12</strong> produtos</span>
-                <div class="pagination" aria-label="Paginação">
-                  <button type="button" aria-label="Página anterior" disabled>‹</button>
-                  <span>1 <small>de 4</small></span>
-                  <button type="button" aria-label="Próxima página">›</button>
-                </div>
-              </footer>
-            </section>
-
-            <div class="side-panels">
-              <section class="panel form-panel" id="new-product" aria-labelledby="new-product-heading">
-                <div class="panel-heading compact-heading">
-                  <div>
-                    <p class="eyebrow">NOVO ITEM</p>
-                    <h2 id="new-product-heading">Cadastrar produto</h2>
-                  </div>
-                  <span class="heading-mark" aria-hidden="true">+</span>
-                </div>
-
-                <form class="dashboard-form">
-                  <label for="product-name">Nome do produto</label>
-                  <input id="product-name" name="name" type="text" placeholder="Ex.: Fios volume brasileiro" />
-
-                  <div class="form-row">
-                    <div>
-                      <label for="product-category">Categoria</label>
-                      <input id="product-category" name="category" type="text" placeholder="Ex.: Cílios" />
-                    </div>
-                    <div>
-                      <label for="product-unit">Unidade</label>
-                      <select id="product-unit" name="unit">
-                        <option value="" selected>Selecione</option>
-                        <option value="unidade">Unidade</option>
-                        <option value="par">Par</option>
-                        <option value="caixa">Caixa</option>
-                        <option value="frasco">Frasco</option>
-                        <option value="ml">Mililitro (ml)</option>
-                        <option value="g">Grama (g)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <label for="minimum-quantity">Quantidade mínima para alerta</label>
-                  <input id="minimum-quantity" name="minimum_quantity" type="number" min="0" step="0.001" placeholder="0" />
-
-                  <p class="form-hint">
-                    O produto será cadastrado com estoque zero. Você registra a quantidade ao fazer uma entrada.
-                  </p>
-                  <button class="primary-button" type="button">Cadastrar produto</button>
-                </form>
-              </section>
-
-              <section class="panel entry-panel" id="movements" aria-labelledby="entry-heading">
-                <div class="panel-heading compact-heading">
-                  <div>
-                    <p class="eyebrow">ATUALIZAR ESTOQUE</p>
-                    <h2 id="entry-heading">Registrar entrada</h2>
-                  </div>
-                  <span class="entry-icon" aria-hidden="true">↓</span>
-                </div>
-                <form class="dashboard-form">
-                  <label for="entry-product">Produto</label>
-                  <select id="entry-product" name="product_id">
-                    <option value="" selected>Escolha um produto</option>
-                    <option value="1">Pinça curva</option>
-                    <option value="2">Cotonete</option>
-                    <option value="3">Higienizador</option>
-                  </select>
-
-                  <div class="form-row">
-                    <div>
-                      <label for="entry-quantity">Quantidade que entrou</label>
-                      <input id="entry-quantity" name="quantity" type="number" min="0.001" step="0.001" placeholder="Ex.: 5" />
-                    </div>
-                    <div>
-                      <label for="entry-notes">Observação</label>
-                      <input id="entry-notes" name="notes" type="text" placeholder="Opcional" />
-                    </div>
-                  </div>
-                  <button class="secondary-button" type="button">
-                    <span aria-hidden="true">＋</span>
-                    Registrar entrada
-                  </button>
-                </form>
-              </section>
-            </div>
+              <span class="sr-only">Buscar produtos</span>
+              <input id="product-search" type="search" placeholder="Buscar por nome ou categoria..." />
+            </label>
+            <label class="status-filter-label" for="product-status-filter">Estado</label>
+            <select class="status-filter" id="product-status-filter">
+              <option value="all">Todos</option>
+              <option value="active">Ativos</option>
+              <option value="inactive">Inativos</option>
+            </select>
           </div>
 
-          <footer class="page-footer">
-            <span>LASHSYSTEMA</span>
-            <span>Organização que acompanha o seu talento</span>
+          <div class="table-scroll">
+            <table class="product-table">
+              <thead>
+                <tr>
+                  <th scope="col">PRODUTO</th>
+                  <th scope="col">CATEGORIA</th>
+                  <th scope="col">UNIDADE</th>
+                  <th scope="col">QUANTIDADE</th>
+                  <th scope="col">ESTADO</th>
+                </tr>
+              </thead>
+              <tbody id="products-table-body"></tbody>
+            </table>
+          </div>
+          <footer class="table-footer">
+            <span id="products-list-count" aria-live="polite">Carregando produtos...</span>
           </footer>
+        </section>
+
+        <div class="product-actions-grid">
+          <section class="panel form-panel" id="new-product" aria-labelledby="new-product-heading">
+            <div class="panel-heading compact-heading">
+              <div>
+                <p class="eyebrow">NOVO ITEM</p>
+                <h2 id="new-product-heading">Cadastrar produto</h2>
+              </div>
+            </div>
+            <form class="dashboard-form" id="product-form">
+              <p class="form-feedback" id="product-feedback" role="status" hidden></p>
+              <label for="product-name">Nome do produto</label>
+              <input id="product-name" name="name" type="text" maxlength="150" required placeholder="Ex.: Fios volume brasileiro" />
+
+              <div class="form-row">
+                <div>
+                  <label for="product-category">Categoria</label>
+                  <input id="product-category" name="category" type="text" maxlength="80" placeholder="Ex.: Cílios" />
+                </div>
+                <div>
+                  <label for="product-unit">Unidade</label>
+                  <select id="product-unit" name="unit" required>
+                    <option value="" selected>Selecione</option>
+                    <option value="unidade">Unidade</option>
+                    <option value="par">Par</option>
+                    <option value="caixa">Caixa</option>
+                    <option value="frasco">Frasco</option>
+                    <option value="ml">Mililitro (ml)</option>
+                    <option value="g">Grama (g)</option>
+                  </select>
+                </div>
+              </div>
+
+              <label for="minimum-quantity">Quantidade mínima para alerta</label>
+              <input id="minimum-quantity" name="minimum_quantity" type="number" min="0" step="0.001" value="0" required />
+              <p class="form-hint">O cadastro começa com saldo zero. Use uma entrada para adicionar quantidade.</p>
+              <button class="primary-button" id="product-submit" type="submit">Cadastrar produto</button>
+            </form>
+          </section>
+
+          <section class="panel entry-panel" id="movements" aria-labelledby="entry-heading">
+            <div class="panel-heading compact-heading">
+              <div>
+                <p class="eyebrow">ESTOQUE</p>
+                <h2 id="entry-heading">Registrar entrada</h2>
+              </div>
+            </div>
+            <form class="dashboard-form" id="entry-form">
+              <p class="form-feedback" id="entry-feedback" role="status" hidden></p>
+              <label for="entry-product">Produto</label>
+              <select id="entry-product" name="product_id" required>
+                <option value="" selected>Escolha um produto ativo</option>
+              </select>
+              <div class="form-row">
+                <div>
+                  <label for="entry-quantity">Quantidade que entrou</label>
+                  <input id="entry-quantity" name="quantity" type="number" min="0.001" step="0.001" required placeholder="Ex.: 5" />
+                </div>
+                <div>
+                  <label for="entry-notes">Observação</label>
+                  <input id="entry-notes" name="notes" type="text" placeholder="Opcional" />
+                </div>
+              </div>
+              <button class="secondary-button" id="entry-submit" type="submit">Registrar entrada</button>
+            </form>
+          </section>
         </div>
-      </main>
-    </div>
+
+        <footer class="page-footer">
+          <span>LASHSYSTEMA</span>
+          <span>Organização que acompanha o seu talento</span>
+        </footer>
+      </div>
+    </main>
   </body>
 </html>

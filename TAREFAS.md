@@ -1,30 +1,23 @@
-# Tarefa atual
+# Próxima tarefa
 
-## Criar a primeira tela de produtos
+## Criar endpoint para ativar ou desativar um produto
 
-**Estado:** estrutura HTML e estilos CSS criados; integração JavaScript e rota do servidor continuam pendentes.
+**Estado:** a página lista os estados e filtra produtos ativos/inativos; o endpoint para mudar esse estado ainda não existe.
 
-**Onde:** `public/js/login.js`, no `TODO` dentro de `showAuthenticatedState`.
+**Onde começar:** `src/routes/products.routes.js`, no `TODO` logo abaixo da rota de cadastro.
 
-**Objetivo:** começar o front usando as APIs que já estão prontas para listar produtos, cadastrar um produto sem saldo inicial e registrar entradas.
+**Objetivo:** implementar `PATCH /api/v1/products/:productId/status`, protegido pelo middleware JWT. A requisição deve receber `{ "is_active": false }` ou `{ "is_active": true }`.
 
-**Arquivos previstos:**
+**Regras para implementar:**
 
-- `src/view/products.html` para a estrutura da tela.
-- `public/css/products.css` para os estilos.
-- `public/js/products.js` para carregar e enviar dados à API.
-- `src/server.js` para servir a página em `/products`.
-- `public/js/login.js` para navegar à tela depois do login e ao restaurar uma sessão existente.
+1. Validar o `productId` da URL e o corpo da requisição.
+2. Usar `request.user.id` para garantir que só o dono altere o produto.
+3. Atualizar apenas `is_active` e `updated_at`, retornando o produto atualizado.
+4. Responder `404` se o produto não existir para aquele usuário.
+5. Considerar conflito `409` ao reativar um produto cujo nome já esteja sendo usado por outro produto ativo do mesmo usuário.
 
-**A tela inicial deve permitir:**
+**Arquivos para seguir:** rota → controller → service → teste manual no Insomnia.
 
-1. Listar produtos com nome, categoria, unidade, saldo atual e limite mínimo, usando `GET /api/v1/products`.
-2. Cadastrar produto sem campo de quantidade, usando `POST /api/v1/products`.
-3. Registrar uma entrada a partir do produto selecionado, usando `POST /api/v1/products/:productId/movements`.
-4. Enviar o JWT salvo em `sessionStorage` no header `Authorization: Bearer <token>`.
+**Como conferir:** enviar o PATCH com token e `is_active: false`, conferir que o produto aparece como inativo na listagem; depois enviar `is_active: true` e conferir que volta a aparecer como ativo. Testar também ID inválido, produto de outro usuário e corpo inválido.
 
-O ID do produto deve ficar associado ao item selecionado na interface; a cliente escolhe o produto pelo nome e não precisa digitar o ID.
-
-**Como conferir:** entrar pelo login, abrir a tela de produtos, carregar a lista, cadastrar um produto e registrar uma entrada. A lista deve refletir o saldo atualizado.
-
-Saídas de estoque e consulta do histórico ainda serão implementadas em tarefas posteriores.
+Não altere quantidade nem histórico de estoque neste endpoint.

@@ -29,6 +29,11 @@ app.get(["/", "/login"], (_request, response) => {
   response.sendFile(path.join(viewDirectory, "login.html"));
 });
 
+// Entrega a tela de produtos; os dados continuam vindo das rotas da API abaixo.
+app.get("/products", (_request, response) => {
+  response.sendFile(path.join(viewDirectory, "products.html"));
+});
+
 //ROTAS DE APIs
 //=================================
 app.use("/api/v1/auth", authRoutes);
