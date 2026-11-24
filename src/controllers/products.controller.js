@@ -1,4 +1,4 @@
-import {listProducts, registerProduct, registerEntry} from "../services/products.service.js";
+import { listProducts, registerProduct, registerEntry } from "../services/products.service.js";
 import { isValidAmount } from "../utils/validator.utils.js";
 
 export async function getProducts(req, res, next) {
@@ -11,7 +11,7 @@ export async function getProducts(req, res, next) {
         //retornar somente os dados publicos produzidos pelo serviço
         return res.status(200).json({ products })
     } catch (error) {
-        return next(error)   
+        return next(error)
     }
 }
 
@@ -183,4 +183,28 @@ export async function postEntry(req, res, next) {
 
         return next(error);
     }
+
+}
+
+export async function patchProductStatus(req, res) {
+    //TODO: validar o ID e o estado e chamar os service
+    productId = req.params.productId;
+
+    // products.id é BIGINT. Primeiro verificamos o formato;
+    // depois comparamos com o maior valor aceito pelo PostgreSQL.
+    const isValidProductId = typeof productId === "string" && /^[1-9]\d*$/.test(productId) && BigInt(productId) <= 9223372036854775807n;
+
+    if (!isValidProductId) {
+        return res.status(400).json({
+            error: "productId deve ser um inteiro positivo válido.",
+        });
+    }
+
+    const { is_active } = req.body;
+
+    
+
+    return res.status(501).json({
+        error: "Endpoint ainda nao implementado"
+    })
 }
