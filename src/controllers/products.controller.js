@@ -188,7 +188,7 @@ export async function postEntry(req, res, next) {
 
 export async function patchProductStatus(req, res) {
     //TODO: validar o ID e o estado e chamar os service
-    productId = req.params.productId;
+    const productId = req.params.productId;
 
     // products.id é BIGINT. Primeiro verificamos o formato;
     // depois comparamos com o maior valor aceito pelo PostgreSQL.
@@ -200,9 +200,27 @@ export async function patchProductStatus(req, res) {
         });
     }
 
+    // O body precisa ser um objeto JSON, e não null ou um array.
+  if (
+    req.body === null ||
+    typeof req.body !== "object" ||
+    Array.isArray(req.body)
+  ) {
+    return res.status(400).json({
+      error: "O corpo da requisição deve ser um objeto JSON.",
+    });
+  }
+
     const { is_active } = req.body;
 
-    
+     // O JSON deve conter true ou false de verdade, não textos como "false".
+  if (typeof is_active !== "boolean") {
+    return res.status(400).json({
+      error: "is_active deve ser true ou false.",
+    });
+  }
+
+  // Temporário: quando a validação passar, ainda falta chamar o service.
 
     return res.status(501).json({
         error: "Endpoint ainda nao implementado"

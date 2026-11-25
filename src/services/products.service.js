@@ -56,6 +56,34 @@ export async function registerProduct(userId, name, category, unit, minimum_quan
 }
 
 // Registra a entrada no saldo e no histórico como uma única operação lógica.
+// Atualiza apenas o estado (ativo/inativo) do produto.
+// Esta função recebe valores simples do controller e não conhece req ou res.
+export async function updateProductStatus(userId, productId, isActive) {
+    const result = await pool.query(
+        `
+            UPDATE products
+            SET is_active = $1,
+                updated_at = NOW()
+            WHERE id = $2
+              AND user_id = $3
+            RETURNING id, user_id, name, category, unit, quantity,
+                      minimum_quantity, is_active, created_at, updated_at
+        `,
+        [
+            // A ordem destes valores corresponde aos placeholders da query:
+            // $1 define o novo estado, $2 identifica o produto, $3 limita ao dono.
+            isActive,
+            productId,
+            userId,
+        ]
+    );
+
+    // UPDATE ... RETURNING coloca a linha alterada em rows[0].
+    // Se não houver resultado, o ID não existe ou pertence a outra conta.
+    // Retornamos null para o controller responder 404 sem revelar dados de terceiros.
+    return result.rows[0] ?? null;
+}
+
 export async function registerEntry(userId, productId, quantity, notes = null) {
     // isValidAmount permite zero porque também é usada para limites mínimos;
     // para uma entrada, a regra é mais restrita: a quantidade deve ser positiva.
